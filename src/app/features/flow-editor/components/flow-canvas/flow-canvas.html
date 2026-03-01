@@ -1,0 +1,14 @@
+<div class="w-dvh h-dvh flex flex-col">
+  <app-catalogs-node (save)="onSave()"></app-catalogs-node>
+  <div class="flex-1 ml-64 border" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+    <vflow
+      view="auto"
+      [nodes]="nodes()"
+      [edges]="edges()"
+      (connect)="createEdge($event)"
+      (nodesChanges.select)="selectNode($event)"
+    ></vflow>
+  </div>
+
+  <pre class="pl-80">{{ edges() | json }}</pre>
+</div>

@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { NodeOne } from './nodes/node-one/node-one';
+import { FlowCanvas } from './features/flow-editor/components/flow-canvas/flow-canvas';
 
 export const routes: Routes = [
   {
     path: '',
-    component: NodeOne,
+    component: FlowCanvas,
   },
 ];

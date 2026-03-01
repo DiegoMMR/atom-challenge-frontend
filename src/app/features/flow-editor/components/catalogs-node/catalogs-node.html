@@ -1,0 +1,68 @@
+<aside
+  class="fixed left-0 top-0 h-full w-64 bg-gray-900 border-r border-gray-700 flex flex-col shadow-2xl z-10"
+>
+  <!-- Header -->
+  <div class="px-5 py-4 border-b border-gray-700">
+    <h2 class="text-xs font-semibold uppercase tracking-widest text-gray-400">Nodos</h2>
+    <p class="text-white font-bold text-lg mt-0.5">Catálogo</p>
+  </div>
+
+  <!-- Node list -->
+  <div class="flex flex-col gap-3 p-4 overflow-y-auto flex-1">
+    @for (node of nodeCatalog(); track node.type) {
+      <div
+        draggable="true"
+        (dragstart)="onDragStart($event, node.type)"
+        class="group flex items-center gap-3 p-3 rounded-xl bg-gray-800 border border-gray-700 cursor-grab active:cursor-grabbing transition-all duration-200 {{
+          node.hoverBorder
+        }}"
+      >
+        <div
+          class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors {{
+            node.bgColor
+          }}"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="node.iconPath" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-white font-medium text-sm">{{ node.label }}</p>
+          <p class="text-gray-400 text-xs">{{ node.description }}</p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Footer -->
+  <div class="px-5 py-4 border-t border-gray-700 flex flex-col gap-2">
+    <p class="text-gray-500 text-xs">Arrastra un nodo al canvas</p>
+    <button
+      (click)="onSave()"
+      class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-sm transition-colors duration-200 shadow-lg shadow-indigo-900/40"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M17 16v2a2 2 0 01-2 2H5a2 2 0 01-2-2v-2M12 12V3m0 9l-3-3m3 3l3-3"
+        />
+      </svg>
+      Guardar
+    </button>
+  </div>
+</aside>
