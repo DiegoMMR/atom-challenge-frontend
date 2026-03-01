@@ -73,6 +73,6 @@ export class FlowCanvas {
   }
 
   private createFlow(): void {
-    this.nodesService.createFlow();
+    this.nodesService.saveFLow();
   }
 }

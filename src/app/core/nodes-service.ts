@@ -1,8 +1,11 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Edge, Node } from 'ngx-vflow';
 import { NodeBase } from '../features/flow-editor/components/node-base/node-base';
 import { INodeConfig, NodePorts } from '../models/node-config.model';
 import { NodeType } from '../models/nodes.model';
+import { SendFlow } from '../models/send-flow.mode';
+import { environment } from '../../environments/environment.development';
+import { Api } from './api';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +14,7 @@ export class NodesService {
   public nodes = signal<Node[]>([]);
   public edges = signal<Edge[]>([]);
   public selectedNodeId = signal<string | null>(null);
+  private readonly apiService = inject(Api);
 
   private nodeConfig(id: string): Node {
     const uuid = crypto.randomUUID();
@@ -35,7 +39,7 @@ export class NodesService {
     this.selectedNodeId.set(null);
   }
 
-  public createFlow() {
+  private createFlow(): SendFlow {
     const nodes: INodeConfig[] = [];
     console.log('crear final');
 
@@ -73,5 +77,23 @@ export class NodesService {
     }
 
     console.log(nodes);
+
+    return {
+      id: environment.idFirestore,
+      flow: nodes,
+    };
+  }
+
+  public saveFLow() {
+    const flow = this.createFlow();
+    this.apiService
+      .saveFlow(flow)
+      .then((response) => {
+        alert('Flujo guardado exitosamente!');
+        console.log('Flow saved successfully:', response);
+      })
+      .catch((error) => {
+        console.error('Error saving flow:', error);
+      });
   }
 }

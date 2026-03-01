@@ -25,5 +25,5 @@ export interface INodeConfig {
 }
 
 export interface FlowConfig {
-  nodes: INodeConfig[];
+  flow: INodeConfig[];
 }
