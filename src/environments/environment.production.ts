@@ -1,3 +1,3 @@
 export const environment = {
-  apiBaseUrl: 'https://api.example.com'
+  apiBaseUrl: 'https://coral-app-t67q2.ondigitalocean.app/api'
 };
