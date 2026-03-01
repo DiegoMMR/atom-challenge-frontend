@@ -1,6 +1,6 @@
-<div class="w-dvh h-dvh flex flex-col">
+<div class="w-dvh h-dvh flex">
   <app-catalogs-node (save)="onSave()"></app-catalogs-node>
-  <div class="flex-1 ml-64 border" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+  <div class="flex-1 border" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
     <vflow
       view="auto"
       [nodes]="nodes()"
@@ -9,6 +9,6 @@
       (nodesChanges.select)="selectNode($event)"
     ></vflow>
   </div>
-
-  <pre class="pl-80">{{ edges() | json }}</pre>
+  <app-node-config></app-node-config>
+  <!-- <pre class="pl-80">{{ edges() | json }}</pre> -->
 </div>

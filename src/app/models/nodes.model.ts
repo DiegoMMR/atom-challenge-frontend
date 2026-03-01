@@ -1,4 +1,11 @@
-export type NodeType = 'memory' | 'orchestrator' | 'validator' | 'specialist' | 'generic';
+export type NodeType =
+  | 'memory'
+  | 'orchestrator'
+  | 'validator'
+  | 'specialist'
+  | 'generic'
+  | 'init'
+  | 'end';
 
 export interface NodeCatalogItem {
   type: NodeType;
@@ -10,14 +17,23 @@ export interface NodeCatalogItem {
 }
 
 export const NODE_TYPES: NodeType[] = [
+  'init',
   'memory',
   'orchestrator',
   'validator',
   'specialist',
   'generic',
+  'end',
 ];
 
 export const NODE_META: Record<NodeType, Omit<NodeCatalogItem, 'type'>> = {
+  init: {
+    label: 'Inicio',
+    description: 'Punto de entrada del flujo',
+    bgColor: 'bg-teal-600 group-hover:bg-teal-500',
+    hoverBorder: 'hover:border-teal-500',
+    iconPath: 'M5 3l14 9-14 9V3z',
+  },
   memory: {
     label: 'Memory',
     description: 'Almacenamiento de contexto',
@@ -56,5 +72,12 @@ export const NODE_META: Record<NodeType, Omit<NodeCatalogItem, 'type'>> = {
     hoverBorder: 'hover:border-gray-400',
     iconPath:
       'M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4',
+  },
+  end: {
+    label: 'Fin',
+    description: 'Punto de salida del flujo',
+    bgColor: 'bg-rose-600 group-hover:bg-rose-500',
+    hoverBorder: 'hover:border-rose-500',
+    iconPath: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9 10h6M9 14h6',
   },
 };

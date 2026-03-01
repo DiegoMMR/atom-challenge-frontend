@@ -3,10 +3,11 @@ import { Component, computed, inject } from '@angular/core';
 import { Connection, NodeSelectedChange, Vflow } from 'ngx-vflow';
 import { NodesService } from '../../../../core/nodes-service';
 import { CatalogsNode } from '../catalogs-node/catalogs-node';
+import { NodeConfig } from '../node-config/node-config';
 
 @Component({
   selector: 'app-flow-canvas',
-  imports: [Vflow, CatalogsNode, JsonPipe],
+  imports: [Vflow, CatalogsNode, JsonPipe, NodeConfig],
   templateUrl: './flow-canvas.html',
   styleUrl: './flow-canvas.css',
 })
@@ -48,6 +49,15 @@ export class FlowCanvas {
   }
 
   public onSave(): void {
-    console.log('Evento save recibido en FlowCanvas — flujo listo para guardar.', this.nodes());
+    console.log(
+      'Evento save recibido en FlowCanvas — flujo listo para guardar.',
+      this.nodes(),
+      this.edges(),
+    );
+    this.createFlow();
+  }
+
+  private createFlow(): void {
+    this.nodesService.createFlow();
   }
 }
