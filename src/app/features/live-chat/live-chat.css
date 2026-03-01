@@ -1,0 +1,45 @@
+/* Animación de entrada para burbujas de mensaje */
+@keyframes message-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-bubble {
+  animation: message-enter 0.2s ease-out forwards;
+}
+
+/* Typing indicator — dots rebotando */
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+.typing-dot {
+  animation: typing-bounce 1.2s ease-in-out infinite;
+}
+
+.typing-dot-1 { animation-delay: 0ms; }
+.typing-dot-2 { animation-delay: 160ms; }
+.typing-dot-3 { animation-delay: 320ms; }
+
+.chat-textarea {
+  max-height: 120px;
+}
+
+.typing-bubble {
+  animation: message-enter 0.2s ease-out forwards;
+}
