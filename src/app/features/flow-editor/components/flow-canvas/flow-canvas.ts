@@ -1,4 +1,3 @@
-import { JsonPipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { Connection, NodeSelectedChange, Vflow } from 'ngx-vflow';
 import { NodesService } from '../../../../core/nodes-service';
@@ -9,7 +8,7 @@ import { NodeType } from '../../../../models/nodes.model';
 
 @Component({
   selector: 'app-flow-canvas',
-  imports: [Vflow, CatalogsNode, JsonPipe, NodeConfig],
+  imports: [Vflow, CatalogsNode, NodeConfig],
   templateUrl: './flow-canvas.html',
   styleUrl: './flow-canvas.css',
 })

@@ -10,6 +10,7 @@ import { NodeType } from '../models/nodes.model';
 export class NodesService {
   public nodes = signal<Node[]>([]);
   public edges = signal<Edge[]>([]);
+  public selectedNodeId = signal<string | null>(null);
 
   private nodeConfig(id: string): Node {
     const uuid = crypto.randomUUID();
@@ -26,6 +27,12 @@ export class NodesService {
 
   public createNode(id: string) {
     this.nodes.update((nodes) => [...nodes, this.nodeConfig(id)]);
+  }
+
+  public deleteNode(nodeId: string): void {
+    this.nodes.update((nodes) => nodes.filter((n) => n.id !== nodeId));
+    this.edges.update((edges) => edges.filter((e) => e.source !== nodeId && e.target !== nodeId));
+    this.selectedNodeId.set(null);
   }
 
   public createFlow() {

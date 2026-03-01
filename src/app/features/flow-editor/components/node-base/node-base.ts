@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
-import { CustomNodeComponent, HandleComponent } from 'ngx-vflow';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { CustomNodeComponent, HandleComponent, SelectableDirective } from 'ngx-vflow';
 import {
   HandlePosition,
   HandleType,
@@ -7,6 +7,7 @@ import {
   NodeHandleConfig,
   NodeType,
 } from '../../../../models/nodes.model';
+import { NodesService } from '../../../../core/nodes-service';
 
 interface ResolvedHandle {
   position: HandlePosition;
@@ -23,11 +24,12 @@ const DEFAULT_HANDLE_TYPES: Record<HandlePosition, HandleType> = {
 
 @Component({
   selector: 'app-node-base',
-  imports: [HandleComponent],
+  imports: [HandleComponent, SelectableDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (meta(); as m) {
       <div
+        selectable
         class="relative w-44 rounded-xl bg-gray-900 border shadow-xl select-none overflow-hidden"
         [class]="m.theme.cardBorder"
       >
@@ -84,6 +86,8 @@ const DEFAULT_HANDLE_TYPES: Record<HandlePosition, HandleType> = {
   `,
 })
 export class NodeBase extends CustomNodeComponent<NodeType> {
+  private readonly nodesService = inject(NodesService);
+
   protected readonly nodeType = computed(() => this.data() ?? 'generic');
   protected readonly meta = computed(() => NODE_META[this.nodeType()]);
 
@@ -94,4 +98,21 @@ export class NodeBase extends CustomNodeComponent<NodeType> {
         val === true ? { position: pos, type: DEFAULT_HANDLE_TYPES[pos] } : (val as ResolvedHandle),
     );
   });
+
+  constructor() {
+    super();
+    effect(
+      () => {
+        const id = this.node().id;
+        const isSelected = this.selected();
+        if (isSelected) {
+          console.log('Nodo seleccionado:', id);
+          this.nodesService.selectedNodeId.set(id);
+        } else if (this.nodesService.selectedNodeId() === id) {
+          this.nodesService.selectedNodeId.set(null);
+        }
+      },
+      { allowSignalWrites: true },
+    );
+  }
 }

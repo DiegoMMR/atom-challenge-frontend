@@ -1,13 +1,7 @@
-<div class="w-dvh h-dvh flex">
+<div class="w-full h-full flex relative overflow-hidden">
   <app-catalogs-node (save)="onSave()"></app-catalogs-node>
   <div class="flex-1 border" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
-    <vflow
-      view="auto"
-      [nodes]="nodes()"
-      [edges]="edges()"
-      (connect)="createEdge($event)"
-      (nodesChanges.select)="selectNode($event)"
-    ></vflow>
+    <vflow view="auto" [nodes]="nodes()" [edges]="edges()" (connect)="createEdge($event)"></vflow>
   </div>
   <app-node-config></app-node-config>
 </div>

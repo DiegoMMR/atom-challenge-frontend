@@ -1,1 +1,112 @@
-<p>node-config works!</p>
+<aside
+  class="fixed right-0 top-0 h-full w-64 bg-gray-900 border-l border-gray-700 flex flex-col shadow-2xl z-20 transition-transform duration-300"
+  [class.translate-x-full]="!isNodeSelected()"
+  [class.translate-x-0]="isNodeSelected()"
+>
+  <!-- Header -->
+  <div class="px-5 py-4 border-b border-gray-700">
+    <h2 class="text-xs font-semibold uppercase tracking-widest text-gray-400">Nodo</h2>
+    <p class="text-white font-bold text-lg mt-0.5">Propiedades</p>
+  </div>
+
+  <!-- Content -->
+  <div class="flex flex-col gap-4 p-4 overflow-y-auto flex-1">
+    @if (selectedNodeMeta(); as node) {
+      <!-- Node type card -->
+      <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-800 border border-gray-700">
+        <div
+          class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 {{
+            node.theme.iconBg
+          }}"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" [attr.d]="node.iconPath" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-white font-medium text-sm">{{ node.label }}</p>
+          <p class="text-gray-400 text-xs">{{ node.description }}</p>
+        </div>
+      </div>
+
+      <!-- Node ID section -->
+      <div class="flex flex-col gap-1.5">
+        <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">Identificador</p>
+        <div class="rounded-lg bg-gray-800 border border-gray-700 px-3 py-2">
+          <p class="text-gray-300 text-xs font-mono break-all leading-relaxed">{{ node.nodeId }}</p>
+        </div>
+      </div>
+
+      <!-- Type badge section -->
+      <div class="flex flex-col gap-1.5">
+        <p class="text-xs font-semibold uppercase tracking-widest text-gray-500">Tipo</p>
+        <div class="flex items-center gap-2">
+          <span
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border {{
+              node.theme.labelColor
+            }} {{ node.theme.headerBg }} {{ node.theme.headerBorder }}"
+          >
+            <span class="w-1.5 h-1.5 rounded-full {{ node.theme.dotColor }}"></span>
+            {{ node.type }}
+          </span>
+        </div>
+      </div>
+    } @else {
+      <!-- Empty state -->
+      <div class="flex flex-col items-center justify-center flex-1 gap-3 text-center py-8">
+        <div
+          class="w-12 h-12 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6 text-gray-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"
+            />
+          </svg>
+        </div>
+        <p class="text-gray-500 text-xs">Selecciona un nodo<br />para ver sus propiedades</p>
+      </div>
+    }
+  </div>
+
+  <!-- Footer -->
+  <div class="px-5 py-4 border-t border-gray-700 flex flex-col gap-2">
+    <p class="text-gray-500 text-xs">Acciones del nodo seleccionado</p>
+    <button
+      (click)="deleteSelectedNode()"
+      [disabled]="!isNodeSelected()"
+      class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-rose-700 hover:bg-rose-600 active:bg-rose-800 disabled:bg-gray-800 disabled:text-gray-600 disabled:cursor-not-allowed text-white font-semibold text-sm transition-colors duration-200 shadow-lg shadow-rose-900/40"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="w-4 h-4"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+        />
+      </svg>
+      Eliminar nodo
+    </button>
+  </div>
+</aside>
