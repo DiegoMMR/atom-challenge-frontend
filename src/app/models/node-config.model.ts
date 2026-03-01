@@ -6,6 +6,7 @@ export interface NodePort {
 export interface NodePorts {
   in: NodePort[];
   out: NodePort[];
+  memory?: INodeConfig[];
 }
 
 export interface NodePosition {

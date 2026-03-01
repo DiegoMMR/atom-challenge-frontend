@@ -1,8 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { Edge, Node } from 'ngx-vflow';
-import { NodeEnd } from '../features/flow-editor/components/node-end/node-end';
-import { NodeInit } from '../features/flow-editor/components/node-init/node-init';
+import { NodeBase } from '../features/flow-editor/components/node-base/node-base';
 import { INodeConfig, NodePorts } from '../models/node-config.model';
+import { NodeType } from '../models/nodes.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,18 +13,15 @@ export class NodesService {
 
   private nodeConfig(id: string): Node {
     const uuid = crypto.randomUUID();
-    const lenght = this.nodes().length;
-    const point = signal({
-      x: 100 + lenght * 20,
-      y: 100 + lenght * 20,
-    });
+    const length = this.nodes().length;
+    const point = signal({ x: 100 + length * 20, y: 100 + length * 20 });
 
-    const base = { id: `node-${id}-${uuid}`, point };
-
-    if (id === 'init') return { ...base, type: NodeInit };
-    if (id === 'end') return { ...base, type: NodeEnd };
-
-    return { ...base, type: 'default', text: signal(`${id}`) };
+    return {
+      id: `node-${id}_${uuid}`,
+      point,
+      type: NodeBase,
+      data: signal(id as NodeType),
+    };
   }
 
   public createNode(id: string) {
@@ -37,15 +34,32 @@ export class NodesService {
 
     for (const node of this.nodes()) {
       const outEdges = this.edges().filter((e) => e.source === node.id);
+      const memoryMap = new Map<string, INodeConfig>();
       const out = outEdges.flatMap((e) => {
-        const targetNode = this.nodes().find((n) => n.id === e.target);
+        // validar si el nodo es memoria, si es así, no crear conexión directa sino una conexión a un nodo de tipo "memory" intermedio
+
+        const targetNode = this.nodes().find((n) => {
+          if (n.id.includes('memory')) {
+            if (!memoryMap.has(n.id)) {
+              memoryMap.set(n.id, {
+                id: n.id,
+                type: n.type,
+                typeNode: n.id.split('_')[0].replace('node-', ''),
+                ports: { in: [], out: [] },
+                position: n.point(),
+              });
+            }
+            return false;
+          }
+          return n.id === e.target;
+        });
         return targetNode ? [{ id: targetNode.id }] : [];
       });
-      const ports: NodePorts = { in: [], out };
+      const ports: NodePorts = { in: [], out, memory: [...memoryMap.values()] };
       nodes.push({
         id: node.id,
         type: node.type,
-        typeNode: node.id,
+        typeNode: node.id.split('_')[0].replace('node-', ''),
         ports,
         position: node.point(),
       });
