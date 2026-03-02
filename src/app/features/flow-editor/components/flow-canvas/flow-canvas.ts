@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { AfterViewInit, Component, computed, inject, OnInit } from '@angular/core';
 import { Connection, NodeSelectedChange, Vflow } from 'ngx-vflow';
 import { NodesService } from '../../../../core/nodes-service';
 import { CatalogsNode } from '../catalogs-node/catalogs-node';
@@ -12,12 +12,17 @@ import { NodeType } from '../../../../models/nodes.model';
   templateUrl: './flow-canvas.html',
   styleUrl: './flow-canvas.css',
 })
-export class FlowCanvas {
+export class FlowCanvas implements AfterViewInit {
   private readonly nodesService = inject(NodesService);
   private readonly rulesNodeService = inject(RulesNodeService);
 
   public nodes = computed(() => this.nodesService.nodes());
   public edges = computed(() => this.nodesService.edges());
+
+  ngAfterViewInit(): void {
+    console.log('wenas, cargado');
+    this.nodesService.getNodesSaved();
+  }
 
   public createEdge({ source, target }: Connection) {
     if (source && target) {

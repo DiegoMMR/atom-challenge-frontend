@@ -96,4 +96,57 @@ export class NodesService {
         console.error('Error saving flow:', error);
       });
   }
+
+  public async getNodesSaved(): Promise<void> {
+    try {
+      const configs = await this.apiService.getFlows();
+      this.loadFromConfigs(configs);
+    } catch (error) {
+      console.error('Error retrieving nodes:', error);
+    }
+  }
+
+  public loadFromConfigs(configs: INodeConfig[]): void {
+    // ── Nodos ────────────────────────────────────────────────────────
+    // Incluye tanto los nodos principales como los nodos de memoria
+    // embebidos en ports.memory de cada nodo.
+    const allConfigs: INodeConfig[] = [...configs, ...configs.flatMap((c) => c.ports.memory ?? [])];
+
+    // Deduplicar por id (por si algún nodo memory aparece varias veces)
+    const seen = new Set<string>();
+    const uniqueConfigs = allConfigs.filter((c) => {
+      if (seen.has(c.id)) return false;
+      seen.add(c.id);
+      return true;
+    });
+
+    const nodes: Node[] = uniqueConfigs.map((c) => ({
+      id: c.id,
+      point: signal({ x: c.position.x, y: c.position.y }),
+      type: NodeBase,
+      data: signal(c.typeNode as NodeType),
+    }));
+
+    // ── Edges ────────────────────────────────────────────────────────
+    // ports.out → aristas directas; ports.memory → aristas hacia nodos memoria
+    const edges: Edge[] = configs.flatMap((c) => {
+      const outEdges: Edge[] = (c.ports.out ?? []).map((port) => ({
+        id: `edge-${c.id}-${port.id}`,
+        source: c.id,
+        target: port.id,
+      }));
+
+      const memoryEdges: Edge[] = (c.ports.memory ?? []).map((memNode) => ({
+        id: `edge-${c.id}-${memNode.id}`,
+        source: c.id,
+        target: memNode.id,
+      }));
+
+      return [...outEdges, ...memoryEdges];
+    });
+
+    this.nodes.set(nodes);
+    this.edges.set(edges);
+    this.selectedNodeId.set(null);
+  }
 }
