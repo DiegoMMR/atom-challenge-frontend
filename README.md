@@ -134,3 +134,27 @@ Api (core/api.ts)          ← HttpClient, URLs desde environment
 | **ngx-vflow**                     | Librería para el canvas de flujos con nodos y aristas personalizables         |
 | **Reglas de conexión**            | `RulesNodeService` centraliza qué tipos de nodo pueden conectarse             |
 | **Tipos de nodo**                 | `init`, `end`, `orchestrator`, `validator`, `specialist`, `memory`, `generic` |
+
+---
+
+### ¿Por qué elegimos este stack?
+
+- **Angular 21 es la opción más nativa y completa** para este tipo de aplicación; permite un control total sobre cada componente sin depender de abstracciones externas.
+- **ngx-vflow** fue seleccionada específicamente porque es la librería de canvas de flujos más alineada con el ecosistema Angular, lo que nos permitió **customizar cada nodo con total libertad** usando componentes Angular puros.
+- **Signals** es la primitiva reactiva oficial de Angular moderno; al adoptarla eliminamos la necesidad de Zone.js y de librerías de estado externas como NgRx o RxJS, manteniendo el código más simple y predecible.
+- **Zoneless** (`provideZonelessChangeDetection`) es la configuración recomendada que potencia el uso de Signals, mejorando el rendimiento al evitar la detección de cambios global.
+- **La combinación ngx-vflow + Signals + Zoneless** forma un stack coherente, todo dentro del ecosistema oficial de Angular, lo que reduce la fricción de integración y facilita el mantenimiento.
+
+---
+
+### ¿Qué decisiones técnicas tomaron y por qué?
+
+| Pregunta                                                | Decisión tomada                                              | Justificación                                                                                             |
+| ------------------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| ¿Cómo manejar el estado del canvas?                     | Signals (`signal`, `computed`) en `NodesService`             | Reactivo por defecto, sin boilerplate, compatible con Zoneless                                            |
+| ¿Por qué eliminar Zone.js?                              | `provideZonelessChangeDetection()`                           | Mejor rendimiento y alineación con el futuro de Angular; los Signals hacen innecesario el monkey-patching |
+| ¿Qué librería usar para el canvas de flujos?            | `ngx-vflow`                                                  | Es la más actualizada y nativa para Angular; permite extender nodos con componentes Angular estándar      |
+| ¿Cómo evitar conexiones inválidas entre nodos?          | `RulesNodeService` con lógica centralizada                   | Separar las reglas de negocio del canvas evita lógica dispersa y facilita agregar nuevas restricciones    |
+| ¿Cómo persistir y recuperar el flujo del usuario?       | `saveFlow` al guardar y `getFlows` al cargar                 | Permite al usuario retomar su trabajo y mejora la experiencia visual mostrando el estado actual del flujo |
+| ¿Cómo compatibilizar el despliegue en hosting estático? | Hash routing (`withHashLocation()`)                          | Evita errores 404 en recargas al no requerir configuración especial en el servidor                        |
+| ¿Cómo estructurar el proyecto?                          | Arquitectura feature-based (`features/`, `core/`, `models/`) | Escalabilidad y separación de responsabilidades; cada feature es independiente y el core es reutilizable  |
